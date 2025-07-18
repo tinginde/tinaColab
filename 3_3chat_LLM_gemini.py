@@ -76,26 +76,26 @@ def get_genmini_summary(prompt, model="gemini-1.5-pro-latest"):
     convo = model.start_chat(history=[
   {
     "role": "user",
-    "parts": ['''你會收到幾篇相關的負評，請你將這些負評做清楚的摘要，你只要輸出摘要，不用輸出其他說明文字。例如:\\\"'所以才說 沒人要蹭遠傳訊號有多棒 可惜是兩小倒了 然後連原本的網速也沒了', 
-              '\n有一百理由推拖是整合陣痛期事實就是要你轉到遠傳去年剛申辦亞太是這種速度，合併後變成這種連網頁都開不了的神速遠傳跟台灣大哥大比起來，真的沒好到哪……\n', 
-              '\n訊號強度增加，網速變慢，去看一下愛蓁的測試影片，你就知道遠傳對亞太用戶做了啥陰招。遠傳的總經理之前在 AT&T 就是專門做限速這個業務，所以遠傳請她回來做啥呢？', 
-              '亞太 138 12MB 平常都有7-8MB 高也有12MB1/15基地台一合併後, 網速狂掉, 只剩 1MB - 6MB左右B28 訊號強度RSRP上升 從 -107dBm 到-95dBm但RSRQ下降到 -14dB讓我回想起三年前用亞太的時候也是這樣龜速後來才慢慢改善, 沒想到現在網速又吐回去了 大家各自保重呀'\\\"''']
+    "parts": ['''你會收到幾篇相關的負評，請你將這些負評做清楚的摘要，你只要輸出摘要，不用輸出其他說明文字。例如:\\\"'所以才說 沒人要蹭XX訊號有多棒 可惜是兩小倒了 然後連原本的網速也沒了', 
+              '\n有一百理由推拖是整合陣痛期事實就是要你轉到遠傳去年剛申辦亞太是這種速度，合併後變成這種連網頁都開不了的神速遠傳跟XXX比起來，真的沒好到哪……\n', 
+              '\n訊號強度增加，網速變慢，去看一下OO的測試影片，你就知道XX對KK用戶做了啥陰招。OO的總經理之前在 AT&T 就是專門做限速這個業務，所以OO請她回來做啥呢？', 
+              'JJ 138 12MB 平常都有7-8MB 高也有12MB1/15基地台一合併後, 網速狂掉, 只剩 1MB - 6MB左右B28 訊號強度RSRP上升 從 -107dBm 到-95dBm但RSRQ下降到 -14dB讓我回想起三年前用XX的時候也是這樣龜速後來才慢慢改善, 沒想到現在網速又吐回去了 大家各自保重呀'\\\"''']
   },
   {
     "role": "model",
-    "parts": ['''網速下降：用戶普遍報告合併後網速顯著下降，有人提到原本亞太的網速在合併後大幅降低，甚至有情況出現連基本網頁都難以打開。
+    "parts": ['''網速下降：用戶普遍報告合併後網速顯著下降，有人提到原本AA的網速在合併後大幅降低，甚至有情況出現連基本網頁都難以打開。
 
 訊號質量變化：雖然有提到訊號強度（RSRP）有所增加，但訊號質量（RSRQ）卻出現下降，這對網速和整體網絡體驗產生了負面影響。
 
 用戶不滿與質疑：
 
-有用戶表達對遠傳訊號質量的不滿，並認為合併後的服務不如預期。
-有評論指出遠傳可能採取了限速措施，並質疑遠傳引入前 AT&T 經理人專門負責限速業務的決策。
-比較其他網絡提供商：一些用戶將遠傳與其他提供商（如台灣大哥大）進行比較，認為遠傳的服務沒有顯著優勢。
+有用戶表達對TT訊號質量的不滿，並認為合併後的服務不如預期。
+有評論指出XX可能採取了限速措施，並質疑XX引入前 AT&T 經理人專門負責限速業務的決策。
+比較其他網絡提供商：一些用戶將XX與其他提供商（如AA）進行比較，認為XX的服務沒有顯著優勢。
 
-期待改善：有用戶回憶起三年前使用亞太時也經歷過類似的網速問題，但後來有所改善。目前對於合併後的網速下降表示失望，希望未來能有改進。
+期待改善：有用戶回憶起三年前使用XX時也經歷過類似的網速問題，但後來有所改善。目前對於合併後的網速下降表示失望，希望未來能有改進。
 
-總體來看，用戶對於亞太與遠傳合併後的網絡服務質量表達了明顯的不滿，特別是在網速下降和訊號質量問題上。此外，對於遠傳的經營決策和服務質量也提出了質疑和批評。用戶期待合併後的服務能有所改善，以提供更好的網絡體驗。''']
+總體來看，用戶對於XX與II合併後的網絡服務質量表達了明顯的不滿，特別是在網速下降和訊號質量問題上。此外，對於AA的經營決策和服務質量也提出了質疑和批評。用戶期待合併後的服務能有所改善，以提供更好的網絡體驗。''']
   },
 ])
     convo.send_message(prompt)
@@ -149,35 +149,7 @@ def get_genmini_negresponse(prompt, model="gemini-1.5-pro-latest"):
     convo.send_message(prompt)
     return convo.last.text
 
-# 以下工作測試區
-# get_genmini_negclassifier('收訊很爛，怎麼辦')
-# get_genmini_negresponse('亞太 138 12MB 平常都有7-8MB 高也有12MB1/15基地台一合併後, 網速狂掉, 只剩 1MB - 6MB左右B28 訊號強度RSRP上升 從 -107dBm 到-95dBm但RSRQ下降到 -14dB讓我回想起三年前用亞太的時候也是這樣龜速後來才慢慢改善, 沒想到現在網速又吐回去了 大家各自保重呀')
-# model_vision = genai.GenerativeModel('gemini-pro-vision')
-# def get_genmini_vision_response(prompt, img, model=model_vision):
-#     response = model.generate_content([prompt,img], stream=True)
-#     return response
-
-# python call
-# def calling_gemini_api(data):
-#     url = f'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={GEMINI_API_KEY}'
-#     headers = {'Content-Type': 'application/json'}
-#     response = requests.post(url, headers=headers, json=data)
-#     if response.status_code == 200:
-#         text = response.json().get("candidates")[0]['content']['parts'][0]['text']
-#         print(text)
-#         # print(json.dumps(response.json(), indent=4, ensure_ascii=False))
-
-# data = {
-#     "contents": [
-#         {
-#             "parts": [{"text": "台灣國慶日是哪一天？"}]
-#         }
-#     ]
-# }
-
-# calling_gemini_api(data)
-
-system_instruction = '''你是分類使用者詢問的分類人員，不用回答問題，你要將問題解析為意圖(intent)、實體識別(Entity)、答案請用繁體中文回答。
+# system_instruction = '''你是分類使用者詢問的分類人員，不用回答問題，你要將問題解析為意圖(intent)、實體識別(Entity)、答案請用繁體中文回答。
 答案意圖: 判斷使用者提出的問題，是想要做什麼事。以下例子:\\n--例子開始\\n會下雨嗎、我要查天氣、降雨機率多少 → 查詢天氣意圖\\n我要訂購機票? → 訂購飛機票意圖\\n我要查詢張三的訂單資料? → 查詢訂單資料\\n請問張三的出缺勤記錄 → 查詢出缺勤記錄意圖\\n--例子結束\\n
 實體識別: 判斷使用者提出的問題, 實體必須由使用者提出的問題解析, 不要造假以下例子:\\n--例子開始\\n實體識別: 姓名[張三]在[]前面表示實體,[]裏面表示這個實體的實際值, 實際值來自於問題, 不要造假\\n--例子結束\\n
 \\n**範例問題**: 我要查詢張三的訂單資料\\n--格式開始\\n意圖: 分析您對被問到的問題，問題的意圖\\n實體識別: 實體1[實體的實際值1],實體2[實體的實際值2]..., 可以重複多個, 不同實體請用\\\",\\\"分隔, 同一實體, 有多個實體的實際值, 也請請用\\\",\\\"分隔, --格式結束\\n ## 解析：\\n\\n**問題: {question}**\\n\\n**意圖:**'''
@@ -201,4 +173,4 @@ def get_query_intent(prompt, model="gemini-1.5-pro-latest"):
     convo.send_message(prompt)
     return convo.last.text
     
-print(get_query_intent("我要查詢112年彰化地區的濕地開發狀況"))
+# print(get_query_intent("我要查詢112年彰化地區的濕地開發狀況"))
