@@ -2,6 +2,10 @@
 # 呼叫Openai GPT4o LLM
 
 from openai import OpenAI
+import os
+import chromadb
+import chromadb.utils.embedding_functions as embedding_functions
+import pprint
 
 # 要準備自己的system prompt, user_prompt
 GPT_MODEL = "gpt-4o" # "gpt-4-turbo-2024-04-09"or "gpt-3.5-turbo-1106" or "gpt-4o"
@@ -86,7 +90,12 @@ def get_chat_response(query, report, seed: int = None):
 
 #testing
 query="糖尿病前期"
-with open("patient_c.txt",'r') as f:
-    p_testing_report = f.read()
+try:
+    with open("patient_c.txt", "r") as f:
+        p_testing_report = f.read()
+except FileNotFoundError:
+    print("patient_c.txt not found, using empty report")
+    p_testing_report = ""
 
 p_c = get_chat_response(query, p_testing_report)
+print(p_c)
