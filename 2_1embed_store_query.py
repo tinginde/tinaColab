@@ -13,7 +13,7 @@ openai_ef_chroma = embedding_functions.OpenAIEmbeddingFunction(
 # 2. 用chromadb用huggingface embedding, 中文用這個不會亂碼, HF api_key自己申請
 import chromadb.utils.embedding_functions as embedding_functions
 huggingface_ef = embedding_functions.HuggingFaceEmbeddingFunction(
-    api_key="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",
+    api_key="XXXX",
     model_name="intfloat/multilingual-e5-large-instruct"
 )
 
