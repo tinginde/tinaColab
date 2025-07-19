@@ -1,5 +1,5 @@
 # TinaColab Examples
-[中文说明](README.zh.md)
+[中文說明](README.zh.md)
 
 This repository contains small demonstration scripts for building a RAG (Retrieval Augmented Generation) workflow with different language models. The examples show how to split documents, create embeddings, store them in a Chroma vector database and query them using OpenAI, local LLMs via Ollama and Google Gemini.
 
