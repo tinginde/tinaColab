@@ -5,8 +5,10 @@ import fitz
 import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
 import requests
+import os
+import config
 
-pages = fitz.open("./data/rfp.pdf")
+pages = fitz.open(os.path.join(config.DATA_DIR, "rfp.pdf"))
 # print(len(pages))
 # print(pages[5].get_text())
 
@@ -32,7 +34,7 @@ huggingface_ef = embedding_functions.HuggingFaceEmbeddingFunction(
     model_name="intfloat/multilingual-e5-large-instruct"
 )
 
-chromadb_client = chromadb.PersistentClient(path="./rfp_vectordb")
+chromadb_client = chromadb.PersistentClient(path=config.RFP_VECTOR_STORE_DIR)
 chroma_collection = chromadb_client.get_or_create_collection(name="llm_rfp", embedding_function=huggingface_ef)
 
 if chroma_collection.count() == 0:
@@ -51,7 +53,7 @@ def get_retrieved_docs(query):
     return retrieved_contents
     
 # 推論    
-def generate_ollama_chat_response(query, model='yabi/breeze-7b-instruct-v1_0_q6_k:latest'):
+def generate_ollama_chat_response(query, model=config.DEFAULT_LOCAL_MODEL):
     results = chroma_collection.query(query_texts=[query], n_results=5)
     retrieved_documents = results['documents'][0]
     information='\n\n'.join(retrieved_documents)
