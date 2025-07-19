@@ -1,0 +1,6 @@
+openai
+chromadb
+langchain-text-splitters
+google-generativeai
+requests
+PyMuPDF
