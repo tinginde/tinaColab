@@ -6,6 +6,8 @@ import os
 import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
 import pprint
+import mlflow
+from mlops.mlflow_utils import start_run, log_metrics
 
 # 要準備自己的system prompt, user_prompt
 GPT_MODEL = "gpt-4o" # "gpt-4-turbo-2024-04-09"or "gpt-3.5-turbo-1106" or "gpt-4o"
@@ -66,21 +68,27 @@ def get_chat_response(query, report, seed: int = None):
             completion.usage.total_tokens - prompt_tokens
         )
         
-        #以下這些可以傳入資料庫當作調整各種prompt及模型的參考
+        tokens = {
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+        }
         output_data = {
-                "model_name":GPT_MODEL,
-                "sys_prompt":system_message,
-                "user_promt":user_request,
-                "Response": response_content,
-                "System Fingerprint": system_fingerprint,
-                "Number of prompt tokens": prompt_tokens,
-                "Number of completion tokens": completion_tokens,
-            "vectordata": "med_vectordata2"
+            "model_name": GPT_MODEL,
+            "sys_prompt": system_message,
+            "user_promt": user_request,
+            "Response": response_content,
+            "System Fingerprint": system_fingerprint,
+            **tokens,
+            "vectordata": "med_vectordata2",
         }
 
         # 使用 pprint 來漂亮列印資料
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(output_data)
+
+        with start_run("openai_chat"):
+            mlflow.log_text(response_content, "response.txt")
+            log_metrics(tokens=tokens, durations=None, model_name=GPT_MODEL, prompt=messages[-1]["content"])
 
         return response_content
         

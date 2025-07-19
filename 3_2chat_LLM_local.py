@@ -5,6 +5,8 @@ import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
 import os
 import pprint
+import mlflow
+from mlops.mlflow_utils import start_run, log_metrics
 
 openai_ef_chroma = embedding_functions.OpenAIEmbeddingFunction(
                 api_key=os.environ.get('OPENAI_API_KEY'),
@@ -59,24 +61,33 @@ def get_ollama_chat_response(query, report, model='yabi/breeze-7b-instruct-v1_0_
         prompt_eval_duration_sec = completion['prompt_eval_duration'] / 1e9
         gen_eval_duration_sec = completion['eval_duration'] / 1e9
 
-        # 以下這些可以傳入資料庫當作調整各種 prompt 及模型的參考
+        tokens = {
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+        }
+        durations = {
+            "total_duration_sec": total_duration_sec,
+            "load_duration_sec": load_duration_sec,
+            "prompt_duration_sec": prompt_eval_duration_sec,
+            "gen_duration_sec": gen_eval_duration_sec,
+        }
         output_data = {
             "model_name": model,
             "sys_prompt": system_message,
             "user_promt": user_request,
             "Response": response_content,
-            "Number of prompt tokens": prompt_tokens,
-            "Number of completion tokens": completion_tokens,
-            "Total duration (sec)": total_duration_sec,
-            "Load duration (sec)": load_duration_sec,
-            "Prompt duration (sec)": prompt_eval_duration_sec,
-            "Gen duration (sec)": gen_eval_duration_sec,
+            **tokens,
+            **durations,
             "vectordata": "med_vectordata2"
         }
 
         # 使用 pprint 來漂亮列印資料
         pp = pprint.PrettyPrinter(indent=4)
         pp.pprint(output_data)
+
+        with start_run("local_llm"):
+            mlflow.log_text(response_content, "response.txt")
+            log_metrics(tokens=tokens, durations=durations, model_name=model, prompt=data["messages"][1]["content"])
 
         return response_content
     

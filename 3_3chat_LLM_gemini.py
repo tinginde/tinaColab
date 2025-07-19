@@ -1,5 +1,8 @@
 import google.generativeai as genai
 import os
+import time
+import mlflow
+from mlops.mlflow_utils import start_run, log_metrics
 
 genai.configure(api_key=os.environ.get("genmini_api_key"))
 
@@ -50,10 +53,11 @@ safety_settings = [
 # convo.send_message(YOUR_USER_INPUT)
 # print(convo.last.text)
 def get_km_result(prompt, model="gemini-1.5-pro-latest"):
-    model = genai.GenerativeModel(model_name="gemini-1.5-pro-latest",
+    start = time.time()
+    gmodel = genai.GenerativeModel(model_name=model,
                               generation_config=generation_config,
                               safety_settings=safety_settings)
-    convo = model.start_chat(history=[
+    convo = gmodel.start_chat(history=[
   {
     "role": "user",
     "parts": ["\"\"\"使用以下上下文來回答問題，如果您不知道答案，只需說\"\"資訊不足，問題再描述詳細一點\"\"，不要試圖編造答案。{context}請用中文繁體回答，摘要成150個中文字以內問題: {question}回答:\"\"\".strip()"]
@@ -62,9 +66,14 @@ def get_km_result(prompt, model="gemini-1.5-pro-latest"):
     "role": "model",
     "parts": ["好的，請提供上下文和問題，我會盡力用中文繁體摘要並回答您的問題。"]
   },
-])
+    ])
     convo.send_message(prompt)
-    return convo.last.text
+    response = convo.last.text
+    duration = time.time() - start
+    with start_run("gemini_llm"):
+        mlflow.log_text(response, "response.txt")
+        log_metrics(tokens=None, durations={"duration_sec": duration}, model_name=model, prompt=prompt)
+    return response
 
 
 # 基本上就是透過不同user跟model舉例，建立不同功能的LLM
