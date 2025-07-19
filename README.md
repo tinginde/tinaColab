@@ -1,3 +1,22 @@
+# TinaColab Experiments
+
+This repository contains a few sample scripts for interacting with different language models. Experiment metrics are logged with [MLflow](https://mlflow.org/).
+
+## Setup
+
+Install dependencies using pip
+
+## Viewing MLflow Results
+
+After running any of the scripts you can launch the MLflow UI to inspect runs:
+
+```bash
+mlflow ui --backend-store-uri ./mlruns
+```
+
+Open the displayed address in your browser to view parameters, metrics and logged responses.
+
+
 # TinaColab Examples
 [中文說明](README.zh.md)
 
@@ -79,4 +98,5 @@ Demonstrates loading a PDF, chunking it, storing embeddings and then querying vi
 ## MLflow Tracking
 
 To record experiment results with MLflow, set the `MLFLOW_TRACKING_URI` environment variable to your tracking server or a local directory. Once set, metrics and parameters can be logged from within the scripts using the `mlflow` Python API (not enabled by default in these examples).
+
 
