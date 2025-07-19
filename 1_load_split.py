@@ -2,12 +2,10 @@
 
 import os
 from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
+import config
 
-# 獲取當前腳本的絕對路徑
-script_dir = os.path.dirname(os.path.abspath(__file__))
-
-# 構建相對於腳本位置的文件路徑
-file_path = os.path.join(script_dir, "data", "med_instruction_v2.md")
+# 從設定檔取得資料路徑
+file_path = os.path.join(config.DATA_DIR, "med_instruction_v2.md")
 
 # 分割md成chunk且有meta data
 def read_split_md(md_doc):

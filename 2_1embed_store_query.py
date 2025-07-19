@@ -13,6 +13,7 @@ import os
 import importlib.util
 import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
+import config
 
 
 def load_advise_docs():
@@ -49,7 +50,7 @@ huggingface_ef = embedding_functions.HuggingFaceEmbeddingFunction(
 )
 
 # 建本地chromaDB, name是DB的名字, 要用HF embedding就要改成huggingface_ef，目前med_vectordata2是openai_embedding
-chromadb_client = chromadb.PersistentClient(path="../med_vectordata2/")
+chromadb_client = chromadb.PersistentClient(path=config.VECTOR_STORE_DIR)
 chroma_collection = chromadb_client.get_or_create_collection(name="advise_template", embedding_function=openai_ef_chroma)
 
 #傳入chromaDB 初始化空列表來儲存提取的數據

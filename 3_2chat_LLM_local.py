@@ -5,11 +5,12 @@ import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
 import os
 import pprint
+import config
 
 openai_ef_chroma = embedding_functions.OpenAIEmbeddingFunction(
                 api_key=os.environ.get('OPENAI_API_KEY'),
                 model_name="text-embedding-3-small")
-chromadb_client = chromadb.PersistentClient(path="../med_vectordata2")
+chromadb_client = chromadb.PersistentClient(path=config.VECTOR_STORE_DIR)
 chroma_collection = chromadb_client.get_collection(name="advise_template", embedding_function=openai_ef_chroma)
 
 system_message = '''
@@ -27,7 +28,7 @@ user_request = '''以下是病人的病歷與檢驗報告{report}，根據提供
 1. 衛教時可能詢問病人的問題 2.相關的衛教建議。'''
 
 # 模型可參考ollama list裡面的模型
-def get_ollama_chat_response(query, report, model='yabi/breeze-7b-instruct-v1_0_q6_k:latest'):
+def get_ollama_chat_response(query, report, model=config.DEFAULT_LOCAL_MODEL):
     try:
         results = chroma_collection.query(query_texts=[query], n_results=5)
         retrieved_documents = results['documents'][0]
@@ -89,7 +90,7 @@ def get_ollama_chat_response(query, report, model='yabi/breeze-7b-instruct-v1_0_
 
 #testing
 query="糖尿病前期"
-with open("../patient_c.txt",'r') as f:
+with open(config.PATIENT_FILE,'r') as f:
     p_testing_report = f.read()
 
 p_c = get_ollama_chat_response(query, p_testing_report)
