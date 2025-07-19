@@ -10,6 +10,7 @@ import time
 import mlflow
 from mlops.mlflow_utils import start_run, log_metrics
 
+
 # 要準備自己的system prompt, user_prompt
 GPT_MODEL = "gpt-4o" # "gpt-4-turbo-2024-04-09"or "gpt-3.5-turbo-1106" or "gpt-4o"
 system_message = '''
@@ -30,7 +31,7 @@ user_request = '''以下是病人的病歷與檢驗報告{report}，根據提供
 openai_ef_chroma = embedding_functions.OpenAIEmbeddingFunction(
                 api_key=os.environ.get('OPENAI_API_KEY'),
                 model_name="text-embedding-3-small")
-chromadb_client = chromadb.PersistentClient(path="./med_vectordata2")
+chromadb_client = chromadb.PersistentClient(path=config.VECTOR_STORE_DIR)
 chroma_collection = chromadb_client.get_collection(name="advise_template", embedding_function=openai_ef_chroma)
 
 # 這部分傳入文本要針對不同專案去設計，retrieved_documents是檢索出的資料供LLM參考，此處query是屬於哪種個案，report當作context直接放入prompt，advise是檢索出來的chunking資料, gpt4o設定seed的話可以得到比較一致的效果
@@ -104,10 +105,10 @@ def get_chat_response(query, report, seed: int = None):
 #testing
 query="糖尿病前期"
 try:
-    with open("patient_c.txt", "r") as f:
+    with open(config.PATIENT_FILE, "r") as f:
         p_testing_report = f.read()
 except FileNotFoundError:
-    print("patient_c.txt not found, using empty report")
+    print(f"{config.PATIENT_FILE} not found, using empty report")
     p_testing_report = ""
 
 p_c = get_chat_response(query, p_testing_report)
