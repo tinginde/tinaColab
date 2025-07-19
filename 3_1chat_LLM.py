@@ -6,6 +6,7 @@ import os
 import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
 import pprint
+import time
 import mlflow
 from mlops.mlflow_utils import start_run, log_metrics
 
@@ -50,6 +51,7 @@ def get_chat_response(query, report, seed: int = None):
             api_key=os.environ.get('OPENAI_API_KEY'),
         )
 
+        start = time.time()
         completion = client.chat.completions.create(
             model=GPT_MODEL,
             messages=messages,
@@ -60,6 +62,7 @@ def get_chat_response(query, report, seed: int = None):
         )
 
         response_content = completion.choices[0].message.content
+        duration_sec = time.time() - start
         # print(f"response content: {response_content}")
         system_fingerprint = completion.system_fingerprint
         # print(f"system_fingerprint: {system_fingerprint}")
@@ -72,6 +75,7 @@ def get_chat_response(query, report, seed: int = None):
             "prompt_tokens": prompt_tokens,
             "completion_tokens": completion_tokens,
         }
+        durations = {"duration_sec": duration_sec}
         output_data = {
             "model_name": GPT_MODEL,
             "sys_prompt": system_message,
@@ -79,6 +83,7 @@ def get_chat_response(query, report, seed: int = None):
             "Response": response_content,
             "System Fingerprint": system_fingerprint,
             **tokens,
+            **durations,
             "vectordata": "med_vectordata2",
         }
 
@@ -88,7 +93,7 @@ def get_chat_response(query, report, seed: int = None):
 
         with start_run("openai_chat"):
             mlflow.log_text(response_content, "response.txt")
-            log_metrics(tokens=tokens, durations=None, model_name=GPT_MODEL, prompt=messages[-1]["content"])
+            log_metrics(tokens=tokens, durations=durations, model_name=GPT_MODEL, prompt=messages[-1]["content"])
 
         return response_content
         

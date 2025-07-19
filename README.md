@@ -2,6 +2,14 @@
 
 This repository contains a few sample scripts for interacting with different language models. Experiment metrics are logged with [MLflow](https://mlflow.org/).
 
+## Setup
+
+Install dependencies using pip:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Viewing MLflow Results
 
 After running any of the scripts you can launch the MLflow UI to inspect runs:
