@@ -37,7 +37,9 @@ pip install -r requirements.txt
 
 3. Configure environment variables:
    - `OPENAI_API_KEY` – API key for OpenAI models.
-   - `GEMINI_API_KEY` – API key for Google Gemini models.
+   - `HUGGINGFACE_API_KEY` – API key for HuggingFace embeddings used in `2_1embed_store_query.py` and `rag_example.py`.
+     You can also assign `HUGGINGFACE_API_KEY` directly inside `config.py` if you prefer to keep credentials out of your shell.
+   - `genmini_api_key` – API key for Google Gemini models.
    - Optional: `MLFLOW_TRACKING_URI` to enable [MLflow](https://mlflow.org/) experiment tracking.
 
    Environment variables can be exported in your shell or saved in a `.env` file and loaded with your preferred tool.

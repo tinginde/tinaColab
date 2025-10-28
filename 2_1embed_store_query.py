@@ -43,9 +43,16 @@ openai_ef_chroma = embedding_functions.OpenAIEmbeddingFunction(
                 model_name="text-embedding-3-small")
 
 # 2. 用chromadb用huggingface embedding, 中文用這個不會亂碼, HF api_key自己申請
-import chromadb.utils.embedding_functions as embedding_functions
+try:
+    huggingface_api_key = config.get_huggingface_api_key()
+except RuntimeError as err:
+    raise RuntimeError(
+        "Unable to initialise the HuggingFace embedding function. "
+        f"{err}"
+    ) from err
+
 huggingface_ef = embedding_functions.HuggingFaceEmbeddingFunction(
-    api_key="XXXX",
+    api_key=huggingface_api_key,
     model_name="intfloat/multilingual-e5-large-instruct"
 )
 
