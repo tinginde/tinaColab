@@ -1,40 +1,52 @@
-# 兩個方式獲得embdding
-# 1. 用chromadb串openai api
+"""Query the locally stored Chroma vector store."""
+
+from __future__ import annotations
+
 import os
+from typing import Optional
+
 import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
+
 import config
 
-openai_ef_chroma = embedding_functions.OpenAIEmbeddingFunction(
-                api_key=os.environ.get('OPENAI_API_KEY'),
-                model_name="text-embedding-3-small")
 
-# 建本地chromaDB, name是DB的名字
-chromadb_client = chromadb.PersistentClient(path=config.VECTOR_STORE_DIR)
-chroma_collection = chromadb_client.get_or_create_collection(name="advise_template", embedding_function=openai_ef_chroma)
+def _default_openai_embedding_function():
+    return embedding_functions.OpenAIEmbeddingFunction(
+        api_key=os.environ.get("OPENAI_API_KEY"),
+        model_name="text-embedding-3-small",
+    )
 
-# #傳入chromaDB 初始化空列表來儲存提取的數據
-# documents = []
-# metadatas = []
-# ids = []
 
-# # 遍歷 Document 對象列表，提取所需信息
-# for index, doc in enumerate(advise_docs_list):
-#     documents.append(doc.page_content)
-#     metadatas.append(doc.metadata)
-#     ids.append(f"id{index + 1}")
+def get_collection(
+    *,
+    client: Optional[chromadb.PersistentClient] = None,
+    collection_name: str = "advise_template",
+    embedding_function=None,
+    vector_store_dir: Optional[str] = None,
+):
+    if client is None:
+        client = chromadb.PersistentClient(path=vector_store_dir or config.VECTOR_STORE_DIR)
 
-# # 現在可以將這些數據添加到 collection 中
-# chroma_collection.add(
-#     documents=documents,
-#     metadatas=metadatas,
-#     ids=ids
-# )
+    if embedding_function is None:
+        embedding_function = _default_openai_embedding_function()
 
-# 檢索querying text, n_results是檢索3筆
-query="糖尿病前期的管理"
-results = chroma_collection.query(query_texts=[query] , n_results=3)
-retrieved_documents = results['documents'][0]
-information = "\n\n".join(retrieved_documents)
-# print(chroma_collection.get(include=["documents"]))
-print(information)
+    return client.get_or_create_collection(
+        name=collection_name, embedding_function=embedding_function
+    )
+
+
+def query_collection(collection, query: str, *, n_results: int = 3) -> str:
+    results = collection.query(query_texts=[query], n_results=n_results)
+    retrieved_documents = results.get("documents", [[]])[0]
+    return "\n\n".join(retrieved_documents)
+
+
+def main():  # pragma: no cover - thin wrapper over tested helpers
+    collection = get_collection()
+    information = query_collection(collection, "糖尿病前期的管理", n_results=3)
+    print(information)
+
+
+if __name__ == "__main__":  # pragma: no cover - script entry point
+    main()

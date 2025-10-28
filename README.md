@@ -97,6 +97,18 @@ python rag_example.py
 ```
 Demonstrates loading a PDF, chunking it, storing embeddings and then querying via a local LLM.
 
+## Testing
+
+Offline unit tests cover the document ingestion, vector querying and prompt assembly flows used throughout the RAG examples. Run
+them whenever you modify the pipeline to ensure regressions are caught early:
+
+```bash
+pytest tests/test_rag_data_scripts.py tests/test_rag_chat_scripts.py
+```
+
+The tests rely on in-memory fakes and mocked API clients so they do not require network access or actual API keys beyond dummy
+values supplied via the test harness.
+
 ## MLflow Tracking
 
 To record experiment results with MLflow, set the `MLFLOW_TRACKING_URI` environment variable to your tracking server or a local directory. Once set, metrics and parameters can be logged from within the scripts using the `mlflow` Python API (not enabled by default in these examples).
