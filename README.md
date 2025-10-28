@@ -37,7 +37,7 @@ pip install -r requirements.txt
 
 3. Configure environment variables:
    - `OPENAI_API_KEY` – API key for OpenAI models.
-   - `genmini_api_key` – API key for Google Gemini models.
+   - `GEMINI_API_KEY` – API key for Google Gemini models.
    - Optional: `MLFLOW_TRACKING_URI` to enable [MLflow](https://mlflow.org/) experiment tracking.
 
    Environment variables can be exported in your shell or saved in a `.env` file and loaded with your preferred tool.
@@ -86,7 +86,7 @@ Calls a running Ollama server at `http://localhost:11434/api/chat` using the sto
 ```bash
 python 3_3chat_LLM_gemini.py
 ```
-Example using the Gemini API. Set `genmini_api_key` before running.
+Example using the Gemini API. Set `GEMINI_API_KEY` before running.
 
 ### 7. RAG over PDF
 

@@ -4,7 +4,14 @@ import time
 import mlflow
 from mlops.mlflow_utils import start_run, log_metrics
 
-genai.configure(api_key=os.environ.get("genmini_api_key"))
+API_KEY_ENV_VAR = "GEMINI_API_KEY"
+api_key = os.environ.get(API_KEY_ENV_VAR)
+if not api_key:
+    raise EnvironmentError(
+        f"Missing Google Gemini API key. Please set the '{API_KEY_ENV_VAR}' environment variable."
+    )
+
+genai.configure(api_key=api_key)
 
 # Set up the model
 generation_config = {
