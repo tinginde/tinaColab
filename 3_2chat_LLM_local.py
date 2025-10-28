@@ -1,5 +1,6 @@
 # 接續2_getvector_query.py
 # 呼叫local LLM
+import config
 import requests
 import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
