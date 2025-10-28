@@ -1,0 +1,22 @@
+stages:
+  ingest:
+    cmd: python -m pipelines.ingest --input-dir docs --output-path data/processed_docs.jsonl
+    deps:
+      - docs
+      - pipelines/ingest.py
+    outs:
+      - data/processed_docs.jsonl
+  embed:
+    cmd: python -m pipelines.embed --input-path data/processed_docs.jsonl --output-path embeddings/embeddings.jsonl
+    deps:
+      - data/processed_docs.jsonl
+      - pipelines/embed.py
+    outs:
+      - embeddings/embeddings.jsonl
+  retrain:
+    cmd: python -m pipelines.retrain --skip-ingest --skip-embed --processed-path data/processed_docs.jsonl --embeddings-path embeddings/embeddings.jsonl --model-path models/model.json
+    deps:
+      - embeddings/embeddings.jsonl
+      - pipelines/retrain.py
+    outs:
+      - models/model.json
