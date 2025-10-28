@@ -1,116 +1,85 @@
 # TinaColab Experiments
 
-This repository contains a few sample scripts for interacting with different language models. Experiment metrics are logged with [MLflow](https://mlflow.org/).
+This repository collects lightweight Retrieval Augmented Generation (RAG) examples that run against a variety of language models.
+Each script focuses on a specific step of the workflow—from splitting documents and building embeddings to chatting with remote or
+local models. When desired, experiments can be tracked with [MLflow](https://mlflow.org/).
+
+[中文說明](README.zh.md)
+
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Setup](#setup)
+- [Environment Variables](#environment-variables)
+- [Running the Examples](#running-the-examples)
+- [MLflow Tracking](#mlflow-tracking)
+- [Testing](#testing)
+
+## Requirements
+
+- Python 3.10 or newer
+- Access to the APIs you plan to call (OpenAI, HuggingFace, Google Gemini, Ollama)
+- Optional: an MLflow tracking server or local directory if you wish to log experiments
 
 ## Setup
 
-Install dependencies using pip
+1. Install the Python dependencies:
 
-## Viewing MLflow Results
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-After running any of the scripts you can launch the MLflow UI to inspect runs:
+2. Prepare the `data/` directory relative to the repository root:
+   - `data/med_instruction_v2.md` – Markdown instructions used for embedding.
+   - `data/rfp.pdf` – PDF source for `rag_example.py`.
+   - `patient_c.txt` – optional patient report consumed by the chat examples.
+
+## Environment Variables
+
+Configure credentials and optional settings before running the scripts:
+
+- `OPENAI_API_KEY` – required for OpenAI GPT models.
+- `HUGGINGFACE_API_KEY` – used by `2_1embed_store_query.py` and `rag_example.py` for HuggingFace embeddings (you can also hardcode
+  the value in `config.py`).
+- `GEMINI_API_KEY` – enables the Google Gemini example.
+- `MLFLOW_TRACKING_URI` (optional) – target MLflow tracking store.
+
+Environment variables can be exported in your shell or stored in a `.env` file loaded by your preferred tool.
+
+## Running the Examples
+
+Each script can be executed independently. Ensure that the data files and vector stores referenced above are in place.
+
+| Step | Command | Description |
+| --- | --- | --- |
+| 1 | `python 1_load_split.py` | Split `data/med_instruction_v2.md` into `Document` chunks. |
+| 2 | `python 2_1embed_store_query.py` | Generate embeddings and persist them to `../med_vectordata2/`. Run once before querying. |
+| 3 | `python 2_2getvector_query.py` | Query the stored vectors from the Chroma database. |
+| 4 | `python 3_1chat_LLM.py` | Chat with OpenAI GPT models, optionally providing `patient_c.txt` as context. |
+| 5 | `python 3_2chat_LLM_local.py` | Chat with a local Ollama model at `http://localhost:11434/api/chat`. |
+| 6 | `python 3_3chat_LLM_gemini.py` | Interact with Google Gemini using the embeddings as context. |
+| 7 | `python rag_example.py` | Perform full RAG over a PDF, including chunking and local LLM querying. |
+
+## MLflow Tracking
+
+Launch the MLflow UI to inspect logged runs:
 
 ```bash
 mlflow ui --backend-store-uri ./mlruns
 ```
 
-Open the displayed address in your browser to view parameters, metrics and logged responses.
+Open the displayed address in your browser to view parameters, metrics and generated responses.
 
-
-# TinaColab Examples
-[中文說明](README.zh.md)
-
-This repository contains small demonstration scripts for building a RAG (Retrieval Augmented Generation) workflow with different language models. The examples show how to split documents, create embeddings, store them in a Chroma vector database and query them using OpenAI, local LLMs via Ollama and Google Gemini.
-
-## Setup
-
-1. Install Python dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-2. Prepare the data directory. Place your files in `data/` relative to the repository root:
-   - `data/med_instruction_v2.md` – source markdown instructions used for embedding.
-   - `data/rfp.pdf` – PDF file for `rag_example.py`.
-   - `patient_c.txt` – optional patient report for the chat examples.
-
-3. Configure environment variables:
-   - `OPENAI_API_KEY` – API key for OpenAI models.
-   - `HUGGINGFACE_API_KEY` – API key for HuggingFace embeddings used in `2_1embed_store_query.py` and `rag_example.py`.
-     You can also assign `HUGGINGFACE_API_KEY` directly inside `config.py` if you prefer to keep credentials out of your shell.
-   - `genmini_api_key` – API key for Google Gemini models.
-   - Optional: `MLFLOW_TRACKING_URI` to enable [MLflow](https://mlflow.org/) experiment tracking.
-
-   Environment variables can be exported in your shell or saved in a `.env` file and loaded with your preferred tool.
-
-## Running the Scripts
-
-The examples can be executed individually. Each script assumes that the data files and vector stores are placed in the paths described above.
-
-### 1. Split Markdown
-
-```bash
-python 1_load_split.py
-```
-Reads `data/med_instruction_v2.md` and prints the split `Document` objects.
-
-### 2. Embed and Store
-
-```bash
-python 2_1embed_store_query.py
-```
-Generates embeddings and stores them in `../med_vectordata2/`. Run this once before querying.
-
-### 3. Query Existing Vectors
-
-```bash
-python 2_2getvector_query.py
-```
-Retrieves documents from the previously created Chroma database.
-
-### 4. Chat with OpenAI
-
-```bash
-python 3_1chat_LLM.py
-```
-Uses GPT models to generate answers using retrieved context. Requires `patient_c.txt` if you want to supply a sample report.
-
-### 5. Chat with a Local LLM
-
-```bash
-python 3_2chat_LLM_local.py
-```
-Calls a running Ollama server at `http://localhost:11434/api/chat` using the stored vectors as context.
-
-### 6. Chat with Google Gemini
-
-```bash
-python 3_3chat_LLM_gemini.py
-```
-Example using the Gemini API. Set `GEMINI_API_KEY` before running.
-
-### 7. RAG over PDF
-
-```bash
-python rag_example.py
-```
-Demonstrates loading a PDF, chunking it, storing embeddings and then querying via a local LLM.
+Set `MLFLOW_TRACKING_URI` to point at a tracking server or directory if you want the scripts to log metrics via the `mlflow`
+Python API.
 
 ## Testing
 
-Offline unit tests cover the document ingestion, vector querying and prompt assembly flows used throughout the RAG examples. Run
-them whenever you modify the pipeline to ensure regressions are caught early:
+Offline unit tests cover document ingestion, vector querying and prompt assembly flows. Run them to verify changes:
 
 ```bash
 pytest tests/test_rag_data_scripts.py tests/test_rag_chat_scripts.py
 ```
 
-The tests rely on in-memory fakes and mocked API clients so they do not require network access or actual API keys beyond dummy
-values supplied via the test harness.
-
-## MLflow Tracking
-
-To record experiment results with MLflow, set the `MLFLOW_TRACKING_URI` environment variable to your tracking server or a local directory. Once set, metrics and parameters can be logged from within the scripts using the `mlflow` Python API (not enabled by default in these examples).
-
-
+The tests rely on in-memory fakes and mocked API clients, so they do not require network access or real API keys beyond the dummy
+values supplied by the test harness.
