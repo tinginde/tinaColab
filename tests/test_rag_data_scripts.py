@@ -1,17 +1,7 @@
-import importlib.util
-from pathlib import Path
 from types import SimpleNamespace
 import pytest
 
-
-REPO_ROOT = Path(__file__).resolve().parent.parent
-
-
-def load_module(name: str, relative_path: str):
-    spec = importlib.util.spec_from_file_location(name, REPO_ROOT / relative_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+from my_rag_project.pipelines import embed_store_query, vector_query
 
 
 class FakeEmbeddingFunction:
@@ -36,13 +26,13 @@ class FakeEmbeddingFunction:
 @pytest.fixture()
 def embed_module(monkeypatch):
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
-    return load_module("embed_store_script", "2_1embed_store_query.py")
+    return embed_store_query
 
 
 @pytest.fixture()
 def query_module(monkeypatch):
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
-    return load_module("query_store_script", "2_2getvector_query.py")
+    return vector_query
 
 
 @pytest.fixture()

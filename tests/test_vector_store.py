@@ -1,5 +1,5 @@
-from text_utils import Document
-from vector_store import VectorIndex
+from my_rag_project.embeddings.vector_store import VectorIndex
+from my_rag_project.utils.text_utils import Document
 
 
 def test_query_index_returns_relevant_doc():

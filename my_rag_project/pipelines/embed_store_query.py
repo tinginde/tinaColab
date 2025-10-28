@@ -1,48 +1,29 @@
-"""Create and populate a local Chroma vector store.
-
-This module exposes utilities that ingest the markdown guidance contained in
-``data/med_instruction_v2.md`` into a persistent Chroma collection.  The
-functions are written so that they can be reused from unit tests where the
-embedding function, storage path, or client can be swapped for lightweight
-fakes.
-"""
+"""Create and populate a local Chroma vector store."""
 
 from __future__ import annotations
 
-import importlib.util
 import os
+from pathlib import Path
 from typing import Iterable, Optional, Sequence, Tuple
 
 import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
 
-import config
+from .. import config
+from .load_and_split import load_default_documents
 
 
 CollectionPayload = Tuple[Sequence[str], Sequence[dict], Sequence[str]]
 
 
-def load_advise_docs(file_path: Optional[str] = None):
+def load_advise_docs(file_path: Optional[str | Path] = None):
     """Load and split the markdown instructions.
 
-    The logic is imported from ``1_load_split.py`` so we don't duplicate the
-    splitting implementation here.  A custom ``file_path`` can be supplied to
-    facilitate tests that rely on temporary fixtures.
+    A custom ``file_path`` can be supplied to facilitate tests that rely on
+    temporary fixtures.
     """
 
-    module_path = os.path.join(os.path.dirname(__file__), "1_load_split.py")
-    spec = importlib.util.spec_from_file_location("load_split", module_path)
-    load_split = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(load_split)
-
-    if file_path is None:
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(script_dir, "data", "med_instruction_v2.md")
-
-    with open(file_path, "r", encoding="utf-8") as f:
-        md_content = f.read()
-
-    return load_split.read_split_md(md_content)
+    return load_default_documents(file_path)
 
 
 def _default_openai_embedding_function():

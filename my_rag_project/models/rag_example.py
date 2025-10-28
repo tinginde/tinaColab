@@ -6,7 +6,7 @@ import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
 import requests
 import os
-import config
+from .. import config
 
 pages = fitz.open(os.path.join(config.DATA_DIR, "rfp.pdf"))
 # print(len(pages))

@@ -1,7 +1,7 @@
 """Simple end-to-end workflow for demonstration."""
 import os
-from text_utils import read_split_md
-from vector_store import VectorIndex
+from my_rag_project.embeddings.vector_store import VectorIndex
+from my_rag_project.utils.text_utils import read_split_md
 
 
 def main():
