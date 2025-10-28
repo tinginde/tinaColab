@@ -1,36 +1,24 @@
-import importlib.util
-from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
-
-REPO_ROOT = Path(__file__).resolve().parent.parent
-
-
-def load_module(name: str, relative_path: str):
-    spec = importlib.util.spec_from_file_location(name, REPO_ROOT / relative_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+from my_rag_project.api import chat_llm, chat_llm_local
 
 
 @pytest.fixture()
 def chat_module(monkeypatch):
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
-    module = load_module("chat_llm_script", "3_1chat_LLM.py")
-    monkeypatch.setattr(module, "log_metrics", lambda *args, **kwargs: None)
-    monkeypatch.setattr(module.mlflow, "log_text", lambda *args, **kwargs: None)
-    return module
+    monkeypatch.setattr(chat_llm, "log_metrics", lambda *args, **kwargs: None)
+    monkeypatch.setattr(chat_llm.mlflow, "log_text", lambda *args, **kwargs: None)
+    return chat_llm
 
 
 @pytest.fixture()
 def local_chat_module(monkeypatch):
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
-    module = load_module("chat_llm_local_script", "3_2chat_LLM_local.py")
-    monkeypatch.setattr(module, "log_metrics", lambda *args, **kwargs: None)
-    monkeypatch.setattr(module.mlflow, "log_text", lambda *args, **kwargs: None)
-    return module
+    monkeypatch.setattr(chat_llm_local, "log_metrics", lambda *args, **kwargs: None)
+    monkeypatch.setattr(chat_llm_local.mlflow, "log_text", lambda *args, **kwargs: None)
+    return chat_llm_local
 
 
 class StubCollection:

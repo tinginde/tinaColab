@@ -1,7 +1,7 @@
 from typing import List, Dict
 from math import sqrt
 from collections import defaultdict
-from text_utils import Document
+from my_rag_project.utils.text_utils import Document
 
 class VectorIndex:
     def __init__(self, documents: List[Document]):

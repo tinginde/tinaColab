@@ -1,4 +1,4 @@
-"""Query the locally stored Chroma vector store."""
+"""Query utilities for the local Chroma vector store."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from typing import Optional
 import chromadb
 import chromadb.utils.embedding_functions as embedding_functions
 
-import config
+from .. import config
 
 
 def _default_openai_embedding_function():

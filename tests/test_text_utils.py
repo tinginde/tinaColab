@@ -1,4 +1,4 @@
-from text_utils import read_split_md, Document
+from my_rag_project.utils.text_utils import Document, read_split_md
 
 
 def test_read_split_md_basic():

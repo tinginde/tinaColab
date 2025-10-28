@@ -7,3 +7,6 @@ __pycache__/
 /data/processed_docs.jsonl
 /embeddings/
 /models/
+# Local vector store artifacts
+my_rag_project/med_vectordata2/*
+!my_rag_project/med_vectordata2/.gitkeep
