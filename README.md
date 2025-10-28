@@ -88,7 +88,7 @@ Calls a running Ollama server at `http://localhost:11434/api/chat` using the sto
 ```bash
 python 3_3chat_LLM_gemini.py
 ```
-Example using the Gemini API. Set `genmini_api_key` before running.
+Example using the Gemini API. Set `GEMINI_API_KEY` before running.
 
 ### 7. RAG over PDF
 

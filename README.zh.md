@@ -15,7 +15,7 @@
    - `patient_c.txt` – 可選的病歷報告文件，供聊天示例使用。
 3. 配置環境變量：
    - `OPENAI_API_KEY` – OpenAI 模型的 API key。
-   - `genmini_api_key` – Google Gemini 模型的 API key。
+   - `GEMINI_API_KEY` – Google Gemini 模型的 API key。
    - 可選：`MLFLOW_TRACKING_URI` 用於啟用 [MLflow](https://mlflow.org/) 實驗記錄。
 
    環境變量可以直接導出到 shell，或保存在 `.env` 文件中再加載。
@@ -58,7 +58,7 @@ python 3_2chat_LLM_local.py
 ```bash
 python 3_3chat_LLM_gemini.py
 ```
-示例使用 Gemini API。運行前請設置 `genmini_api_key`。
+示例使用 Gemini API。運行前請設置 `GEMINI_API_KEY`。
 
 ### 7. PDF RAG 示例
 ```bash
