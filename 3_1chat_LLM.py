@@ -1,6 +1,7 @@
 # 接續2_2getvector_query.py
 # 呼叫Openai GPT4o LLM
 
+import config
 from openai import OpenAI
 import os
 import chromadb
